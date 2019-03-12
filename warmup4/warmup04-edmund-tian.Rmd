@@ -1,0 +1,100 @@
+---
+title: "warmup04-edmund-tian.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+1.
+```{r}
+# assembling url so it fits on the screen
+github <- 'https://raw.githubusercontent.com/ucb-stat133/stat133-hws/'
+repo <- 'master/data/nba2018-players.csv'
+datafile <- paste0(github, repo)
+
+data_types <- cols(player = col_character(), team = col_character(), position = col_factor(), height = col_integer(), weight = col_integer(), age = col_integer(), experience = col_integer(), college = col_character(), salary = col_double(), games = col_integer(), minutes = col_integer(), points = col_integer(), points3 = col_integer(), points2 = col_integer(), points1 = col_integer())
+
+dat <- read_csv(datafile, col_names = TRUE, col_types = data_types)
+summary(dat)
+
+typeof(dat)
+```
+
+2.
+a. For printing, Tibbles have a refined print method that shows only the first 10 rows, and all the columns that fit on screen. This prevents the user from accidentlly overwhelming the console when printing large data frames. Tibble can extract by name or position.
+
+b. Yes, you can use cols_only() to include only the columns you explicitly specify.
+
+c. 
+header = col_names
+col.names = col_names
+na.strings = na
+colClasses = col_types
+
+
+3.
+```{r}
+dat
+
+grouped <- group_by(dat, team)
+grouped
+
+team_salaries <- summarize(grouped, total_salary = sum(salary) / 1000000, mean_salary = mean(salary) / 1000000, median_salary = median(salary) / 1000000)
+team_salaries <- arrange(team_salaries, desc(total_salary))
+team_salaries
+
+as.data.frame(team_salaries)
+
+ggplot(data = team_salaries, aes(x = reorder(team, total_salary), y = total_salary)) +
+  geom_col() +
+  coord_flip() +
+  labs(tital = "NBA Team Ranked by Total Salary", x = "Team Name", y = "Total salary (in millions)") +
+  geom_vline(xintercept = mean(team_salaries$total_salary), col = 'red')
+
+```
+
+4.
+```{r}
+team_points <- summarize(grouped, total_points = sum(points), mean_points = mean(points), median_points = median(points))
+team_points <- arrange(team_points, desc(total_points))
+team_points
+
+as.data.frame(team_points)
+
+ggplot(data = team_points, aes(x = reorder(team, total_points), y = total_points)) +
+  geom_col() +
+  coord_flip() +
+  labs(tital = "NBA Team Ranked by Total Points", x = "Team Name", y = "Total points") +
+  geom_vline(xintercept = mean(team_points$total_points), col = 'red')
+
+```
+
+
+5.
+```{r}
+points_salary <- inner_join(team_salaries, team_points, by = "team")
+points_salary
+
+summary(points_salary)
+
+points_salary <- mutate(points_salary, cost_point = total_salary * 1000000 / total_points)
+points_salary
+
+summary(points_salary$cost_point)
+
+ggplot(data = points_salary, aes(x = reorder(team, cost_point), y = cost_point)) +
+  geom_col() +
+  coord_flip() +
+  labs(tital = "NBA Team Ranked by Point Cost", x = "Team Name", y = "Point Cost") +
+  geom_vline(xintercept = mean(points_salary$cost_point), col = 'red')
+
+ggplot(data = points_salary, aes(x = median_salary, y = median_points)) +
+  geom_point() +
+  geom_text(aes(label = team)) +
+  geom_smooth(method = 'lm')
+```

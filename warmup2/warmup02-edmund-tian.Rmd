@@ -1,0 +1,141 @@
+---
+title: "warmup02-edmund-tian.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1.
+```{r}
+number <- c(30, 35, 23, 9, 11, 27, 34, 6, 3, 0)
+player <- c("Stephen Curry", "Kevin Durant", "Draymond Green", "Andrew Iguodala", "Klay Thompson", "Zaza Pachulia", "Shaun Livingston", "Nick Young", "David West", "Patrick McCaw")
+position <- factor(c("PG", "PF", "PF", "SF", "SG", "C", "PG", "SG", "C", "SG"))
+height <- c("6-3", "6-9", "6-7", "6-6", "6-7", "6-11", "6-7", "6-7", "6-9", "6-7")
+weight <- c(190.0, 240.0, 230.0, 215.0, 215.0, 270.0, 192.0, 210.0, 250.0, 185.0)
+birthdate <- c("March 14, 1988", "September 29, 1988", "March 4, 1990", "January 28, 1984", "February 8, 1990", "February 10, 1990", "September 11, 1985", "June 1, 1985", "August 29, 1980", "October 25, 1995")
+experience <- c(8, 10, 5, 13, 6, 14, 12, 10, 14, 1)
+college <- c("Davidson College", "University of Texas at Austin", "Michigan State University", "University of Arizona", "Washington State University", "NA", "NA", "University of Southern California", "Xavier University", "University of Nevada, Las Vegas")
+
+heaviest_player <- player[weight == max(weight)]
+heaviest_player
+
+college_6_6 <- college[height == "6-6"]
+college_6_6
+
+position_most_experienced <- position[experience == max(experience)]
+position_most_experienced
+
+number_lightest_player <- number[weight == min(weight)]
+number_lightest_player
+
+counts_positions <- table(position)
+counts_positions
+
+count_above_avg_weight <- length(weight[weight > mean(weight)])
+count_above_avg_weight
+
+count_between_9_12_years_experience <- length(experience[experience >= 9 & experience <= 12])
+count_between_9_12_years_experience
+
+avg_exp_sg <- mean(experience[position == "SG"])
+avg_exp_sg
+
+med_weight_non_center <- median(weight[position != "C"])
+med_weight_non_center
+
+first_quartile_experience_sg_pf <- quantile(experience[position == "PF" | position == "SG"])[2]
+first_quartile_experience_sg_pf
+
+```
+
+2.
+```{r}
+gsw <- list(
+player = player,
+number = number,
+position = position,
+weight = weight,
+experience = experience
+)
+
+heaviest_player <- gsw$player[gsw$weight == max(gsw$weight)]
+heaviest_player
+
+least_experienced_player <- gsw$player[gsw$experience == min(gsw$experience)]
+least_experienced_player
+
+count_not_between_9_12_years_experience <- length(gsw$experience[gsw$experience < 8 | gsw$experience > 11])
+count_not_between_9_12_years_experience
+
+third_quartile_experience_sg_pf <- quantile(gsw$experience[gsw$position == "PF" | gsw$position == "SG"])[4]
+third_quartile_experience_sg_pf
+
+```
+
+3.
+```{r}
+hp <- list(
+first = 'Harry',
+last = 'Potter',
+courses = c('Potions', 'Enchantments', 'Spells'),
+sport = 'quidditch',
+age = 18L,
+gpa = 3.9
+)
+
+class <- class(hp)
+class
+
+count_elements <- length(hp)
+count_elements
+
+courses_length <- length(hp$courses)
+courses_length
+
+age_type <- typeof(hp$age)
+age_type
+
+gpa_type <- typeof(hp$gpa)
+gpa_type
+
+new_vec <- c(hp$gpa, hp$age)
+new_vec_type <- typeof(new_vec)
+new_vec_type
+
+```
+
+4.
+a. TRUE evaluates to 1
+b. Strings are considered larger than int
+c. The expression in parathensis evaluates to 0 and 0 >= 0
+d. Short circuit
+
+5.
+```{r}
+lord <- c('v', 'o', 'l', 'd', 'e', 'm', 'o', 'r', 't')
+
+lord[TRUE]
+lord[length(lord) + 1]
+lord[seq(from = length(lord), to = 1, by = -2)]
+lord[lord == "o"]
+lord[lord != "e" & lord != "o"]
+lord[lord %in% c('a', 'e', 'i', 'o', 'u')]
+toupper(lord[!(lord %in% c('a', 'e', 'i', 'o', 'u'))])
+paste(lord, collapse = '')
+lord[is.na(lord)]
+sum(!is.na(lord))
+
+```
+a. All the elements that satify the condition TRUE
+b. Index out of bounds
+c. Every third element in reverse order from last to 1st
+d. Charcters that equl "o"
+e. Characters that aren't "e" or "o"
+f. Vowels in lord
+g. Consonenets in lord
+h. 
+i. 
+j. 
+
