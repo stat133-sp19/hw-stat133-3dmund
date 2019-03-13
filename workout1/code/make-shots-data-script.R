@@ -71,3 +71,5 @@ write.csv(
 sink(file = 'output/shots-data-summary.txt')
 summary(data)
 sink()
+
+

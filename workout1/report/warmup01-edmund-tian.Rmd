@@ -5,24 +5,64 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
 ```
 
-## R Markdown
+```{r, include=FALSE}
+shots_data <- read.csv("../data/shots-data.csv", stringsAsFactors = FALSE)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+shots_data
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#	2PT Field Goal
 
-```{r cars}
-summary(cars)
+twos <- select(filter(shots_data, shots_data$shot_type == "2PT Field Goal"), name, shot_made_flag)
+twos <- summarize(group_by(twos, name), percentage = sum(shot_made_flag == "shot_yes") / n())
+twos <- arrange(twos, -1 * percentage)
+twos
+
+threes <- select(filter(shots_data, shots_data$shot_type == "3PT Field Goal"), name, shot_made_flag)
+threes <- summarize(group_by(threes, name), percentage = sum(shot_made_flag == "shot_yes") / n())
+threes <- arrange(threes, -1 * percentage)
+threes
+
+overall <- select(shots_data, name, shot_made_flag)
+overall <- summarize(group_by(overall, name), percentage = sum(shot_made_flag == "shot_yes") / n())
+overall <- arrange(overall, -1 * percentage)
+overall
+
+
 ```
 
-## Including Plots
+**Introduction**
 
-You can also embed plots, for example:
+This current Golden State Warriors team is arguably one of the greatest teams in NBA history. At the same time, the argument could be made that they are breaking the game. A once beautiful game that involved intricate plays now consists of players dribbling up to the three point line and jacking up shots. GSW is the most successful shooting team in NBA history and the results have shown. Teams all over the league and around world emulate their strategy of jacking up shots in an attempt to achieve the same success that GSW has. Unfortunately, many of these teams simply don't have good enough shooters to make that work. Let's look at this graphic showing the shot chart for GSW's 5 best players.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r out.width='80%', echo=FALSE, fig.align='center'}
+knitr::include_graphics('../images/gsw-shot-charts.png')
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+We can see that GSW has three **extremely** good shooters in Steph Curry, Klay Thompson, and Kevin Durant. Although this chart is a great visual for giving us an idea for how good of shooters, it's a little bit too messy to compare the players on a more fine level.
+
+Let's take a look at their shooting percentages (2pt, 3pt, and overall).
+
+We can see that Andre Iguodala has the best 2pt percentage. This makes sense as most of his scores are made near the basket.
+
+```{r}
+twos
+```
+
+In terms of three, the best shooters, as expected are Klay, Steph, and KD.
+```{r}
+threes
+```
+
+Overall, the best shooter is KD. This is expected as KD is one of the best pure scorers in NBA history. With his crazy length and great handles, he's able to easily create good shots for himself.
+```{r}
+overall
+```
+
+Overall, GSW is dominating the league and will continue for years to come. They were already a historic team before KD. With the addition of KD, their best overall shooter, they've become literally unstoppable and will continue to steam roll their way through multiple titles.
+
+
+
