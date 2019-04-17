@@ -87,8 +87,6 @@ server <- function(input, output) {
     modalities$growing_contrib = future_value(input$initial_amount, input$return_rate, modalities$year) +
       growing_annuity(input$annual_contribution, input$return_rate, input$growth_rate, modalities$year)
     
-    modalities <- melt(modalities, c("year"))
-    
     modalities
   })
   
