@@ -1,0 +1,173 @@
+---
+title: "warmup05-edmund-tian.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+library(ggplot2)
+```
+
+**1. Gaussian Function**
+
+```{r}
+#` @title guassian function
+#` @description calculates the probability density for guassian curve
+#` @param x
+#` @param m = mean
+#` @param s = standard deviation
+#` @return computed probability density
+gaussian <- function(x = 0, m = 0, s = 1) {
+  if (s <= 0) {
+    stop("s must be greater than zero")
+  }
+  scale <- 1 / (s * sqrt(2 * pi))
+  power <- -0.5 * ((x - m) / s) ^ 2
+  return(scale * exp(power))
+  
+}
+
+# test set 1
+gaussian(x = 0, m = 0, s = 1)
+gaussian(x = 1, m = 0, s = 2)
+
+
+# test set 2
+gaussian(x = 1, m = 0, s = 0)
+gaussian(x = 1, m = 0, s = -1)
+
+# gaussian curve
+x_values <- seq(from = -4.5, to = 4.5, by = 0.1)
+y_values <- gaussian(x_values, m = 0, s = 2)
+plot(x_values, y_values, las = 1, type = "l", lwd = 2)
+
+x_values <- seq(from = -5, to = 5, by = 0.05)
+df <- data.frame(x = x_values, 
+                 s1 = gaussian(x_values, m = 0, s = sqrt(0.2)),
+                 s2 = gaussian(x_values, m = 0, s = sqrt(1.0)),
+                 s3 = gaussian(x_values, m = 0, s = sqrt(5.0)),
+                 s4 = gaussian(x_values, m = -2, s = sqrt(0.5))
+                 )
+
+
+ggplot(data = df, aes(x_values)) + 
+  geom_line(aes(y = s1, colour = "m = 0, s^2 = 0.2")) +
+  geom_line(aes(y = s2, colour = "m = 0, s^2 = 1")) +
+  geom_line(aes(y = s3, colour = "m = 0, s^2 = 5")) +
+  geom_line(aes(y = s4, colour = "m = -2, s^2 = 0.5")) +
+  labs(tital = "Guassian", x = "X", y = "Guassian(x)")
+
+
+```
+
+**2. Descriptive Statistics**
+
+```{r}
+#` @title descriptive statistics of vector
+#` @description calculates certain statistics for input vector
+#` @param x = numeric vector
+#` @return computed statistics as named vector
+descriptive <- function(x = 0, na.rm = FALSE) {
+  if (!is.numeric(x)) {
+    stop("input must be numeric!!")
+  }
+  
+  if (na.rm) {
+    x <- na.omit(x)
+  }
+  
+  summary <- unname(summary(x))
+  result <- c(summary[1], summary[2], summary[3], summary[4], summary[5], summary[6])
+  result <- c(result, result[6] - result[1], result[5] - result[2], sd(x))
+  names(result) = c("min", "q1", "median", "mean", "q3", "max", "range", "iqr", "sd")
+  
+  return(result)
+}
+
+# input vectors
+set.seed(100)
+x <- rnorm(100)
+y <- x
+y[sample(1:100, size = 10)] <- NA
+
+# test set 1
+descriptive(x)
+descriptive(y)
+descriptive(y, na.rm = TRUE)
+descriptive(letters)
+
+# test set 2
+a <- descriptive(x)
+class(a)
+length(a)
+names(a)
+```
+
+**3. Minkowski Distance**
+
+```{r}
+#` @title minkowski function
+#` @description calculates minkowski function for given inputs
+#` @param x = numeric vector
+#` @param y = numeric vector
+#` @param p = double value
+#` @return computed statistics as double
+minkowski <- function(x, y, p = 1) {
+  if (length(x) != length(y)) {
+    stop("x and y have different lengths")
+  }
+  
+  if (is.numeric(p)) {
+    if (p < 1) {
+      stop("p cannot be less than 1")
+    }
+  } else if (is.character(p)) {
+    if (p != "max" && p != "min") {
+      stop("invalid character value for p")
+    }
+  } else {
+    stop("invalid value for p")
+  }
+  
+  total <- 0.0
+  
+  if (p == "max") {
+    result = 0.0
+    for (i in 1:length(x)) {
+      result = max(result, abs(x[i] - y[i]))
+    }
+    return(result)
+  }
+  
+  if (p == "min") {
+    result = Inf
+    for (i in 1:length(x)) {
+      result = min(result, abs(x[i] - y[i]))
+    }
+    return(result)
+  }
+  
+  for (i in 1:length(x)) {
+    total <- total + abs(x[i] - y[i]) ^ p
+  }
+  
+  return(total ^ (1 / p))
+}
+
+# some points
+point1 <- c(0, 0)
+point2 <- c(1, 1)
+point3 <- sqrt(c(2, 2))
+point4 <- c(0, 1)
+point5 <- c(1, 1, 1)
+
+# test set 1
+minkowski(point1, point2, p = 1)
+minkowski(point1, point3, p = 2)
+minkowski(point1, point2, p = 'max')
+
+# test set 2
+minkowski(point4, point5, p = 1)
+minkowski(point1, point2, p = 0.5)
+minkowski(point1, point2, p = 'min')
+```

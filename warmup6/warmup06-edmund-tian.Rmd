@@ -1,0 +1,64 @@
+---
+title: "warmup06-edmund-tian.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+## R Markdown
+1.
+
+```{r}
+future_value <- function(amount, rate, years) {
+  return(amount * (1 + rate) ^ years)
+}
+
+
+future_value(amount = 100, rate = 0.05, years = 1)
+future_value(amount = 500, rate = 0.05, years = 5)
+future_value(amount = 1000, rate = 0.05, years = 10)
+```
+
+2. 
+
+```{r}
+annuity <- function(contrib, rate, years) {
+  return(contrib * ((1 + rate) ^ years - 1) / rate)
+}
+
+annuity(contrib = 200, rate = 0.05, years = 1)
+annuity(contrib = 200, rate = 0.05, years = 2)
+annuity(contrib = 200, rate = 0.05, years = 10)
+```
+
+3.
+```{r}
+growing_annuity <- function(contrib, rate, growth, years) {
+  num <- (1 + rate) ^ years - (1 + growth) ^ years
+  den <- rate - growth
+  return(contrib * num / den)
+}
+
+growing_annuity(contrib = 200, rate = 0.05, growth = 0.03, years = 1)
+growing_annuity(contrib = 200, rate = 0.05, growth = 0.03, years = 2)
+growing_annuity(contrib = 200, rate = 0.05, growth = 0.03, years = 10)
+```
+
+4.
+```{r}
+iter <- 11
+modalities <- matrix(NA, nrow=iter, ncol=4)
+
+modalities[1, ] <- c(0, 1000.00, 1000.00, 1000.00)
+
+for (x in 1:iter - 1)
+  modalities[x + 1,] <- c(x, future_value(1000, 0.05, x), future_value(1000, 0.05, x) + annuity(200, 0.05, x), future_value(1000, 0.05, x) + growing_annuity(200, .05, .03, x))
+
+
+modalities
+
+```
+
+
