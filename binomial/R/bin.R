@@ -16,3 +16,12 @@ bin_probability <- function(success, trials, prob) {
   return(bin_choose(trials, success) * prob ^ success * (1 - prob) ^ (trials - success))
 
 }
+
+bin_distribution <- function(trials, prob) {
+
+  probabilities <- bin_probability(0:trials, trials, prob)
+
+  df <- data.frame("success" = 0:trials, "probability" = probabilities)
+
+  return(df)
+}

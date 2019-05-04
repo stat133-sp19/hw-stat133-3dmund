@@ -7,6 +7,7 @@ test_that("bin_choose", {
 })
 
 test_that("bin_probability", {
+  expect_error(bin_probability(success = 2, trials = 5, prob = 1.5))
   expect_equal(
     round(bin_probability(success = 2, trials = 5, prob = 0.5), 5),
     round(0.3125, 5)
